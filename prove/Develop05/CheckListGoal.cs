@@ -1,34 +1,72 @@
 using System;
-using System.Collections.Generic;public class ChecklistGoal : Goal
-{
-    public int TotalRepetitions;
-    public int CurrentCount;
-    public int BonusPoints;
 
-    public ChecklistGoal(string name, int pointValue, int totalRepetitions, int bonusPoints)
-        : base(name, pointValue)
+public class CheckListGoal : Goal
+{
+    // Extra attributes specific to CheckListGoal
+    private int _targetCount;      // How many times to complete
+    private int _currentCount;     // Current completion count
+    private int _bonusPoints;      // Bonus points when finished
+
+    // Constructor
+    public CheckListGoal(string name, string description, int points, int targetCount, int bonusPoints)
+        : base(name, description, points)
     {
-        TotalRepetitions = totalRepetitions;
-        CurrentCount = 0;
-        BonusPoints = bonusPoints;
+        _targetCount = targetCount;
+        _currentCount = 0;
+        _bonusPoints = bonusPoints;
     }
 
-    public override void RecordEvent()
+    // Record an event: increase current count, check for completion
+    public override int RecordEvent()
     {
-        if (CurrentCount < TotalRepetitions)
+        if (_currentCount < _targetCount)
         {
-            TotalPoints += PointValue;
-            CurrentCount++;
+            _currentCount++;
+            Console.WriteLine($"Progress: {_currentCount}/{_targetCount}");
 
-            if (CurrentCount == TotalRepetitions)
+            int totalPoints = _points;
+            if (_currentCount == _targetCount)
             {
-                TotalPoints += BonusPoints;
+                Console.WriteLine($"Congratulations! You completed '{_name}' and earned a bonus of {_bonusPoints} points!");
+                totalPoints += _bonusPoints;
             }
+            else
+            {
+                Console.WriteLine($"You earned {_points} points!");
+            }
+
+            return totalPoints;
+        }
+        else
+        {
+            Console.WriteLine($"Goal '{_name}' is already fully completed!");
+            return 0;
         }
     }
 
-    public override string DisplayStatus()
+    // Check if the goal is complete
+    public override bool IsComplete()
     {
-        return $"{Name}: Completed {CurrentCount}/{TotalRepetitions} times - {TotalPoints} points";
+        return _currentCount >= _targetCount;
+    }
+
+    // Display goal details
+    public override string GetDetailsString()
+    {
+        string status = IsComplete() ? "[X]" : "[ ]";
+        return $"{status} {_name} ({_description}) -- Completed {_currentCount}/{_targetCount} times";
+    }
+
+    // Save goal info to a file
+    public override string SaveString()
+    {
+        // Format: CheckListGoal,Name,Description,Points,TargetCount,CurrentCount,BonusPoints
+        return $"CheckListGoal,{_name},{_description},{_points},{_targetCount},{_currentCount},{_bonusPoints}";
+    }
+
+    // Add GetName() so GoalManager can list the name
+    public override string GetName()
+    {
+        return _name;
     }
 }

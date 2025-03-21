@@ -1,21 +1,29 @@
 using System;
-using System.Collections.Generic;
 
-// Base Class for Goals
 public abstract class Goal
 {
-    public string Name;
-    public int PointValue;
-    public int TotalPoints;
+    // Attributes
+    protected string _name;
+    protected string _description;
+    protected int _points;
 
-    public Goal(string name, int pointValue)
+    // Constructor
+    public Goal(string name, string description, int points)
     {
-        Name = name;
-        PointValue = pointValue;
-        TotalPoints = 0;
+        _name = name;
+        _description = description;
+        _points = points;
     }
 
-    // Abstract methods
-    public abstract void RecordEvent();
-    public abstract string DisplayStatus();
+    // Abstract Methods
+    public abstract int RecordEvent();
+    public abstract bool IsComplete();
+    public abstract string GetDetailsString();
+    public abstract string SaveString();
+
+    // Add this virtual method 👇
+    public virtual string GetName()
+    {
+        return _name;
+    }
 }

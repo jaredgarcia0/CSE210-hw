@@ -1,25 +1,50 @@
 using System;
-using System.Collections.Generic;
+
 public class SimpleGoal : Goal
 {
-    private bool completed;
+    // Attribute to track if the goal is complete
+    private bool _isComplete;
 
-    public SimpleGoal(string name, int pointValue) : base(name, pointValue)
+    // Constructor
+    public SimpleGoal(string name, string description, int points)
+        : base(name, description, points)
     {
-        completed = false;
+        _isComplete = false; // Starts as incomplete
     }
 
-    public override void RecordEvent()
+    // Record event: Marks complete, gives points if not already complete
+    public override int RecordEvent()
     {
-        if (!completed)
+        if (!_isComplete)
         {
-            TotalPoints += PointValue;
-            completed = true;
+            _isComplete = true;
+            Console.WriteLine($"You completed '{_name}' and earned {_points} points!");
+            return _points;
+        }
+        else
+        {
+            Console.WriteLine($"Goal '{_name}' is already completed! No points awarded.");
+            return 0;
         }
     }
 
-    public override string DisplayStatus()
+    // Returns whether the goal is complete
+    public override bool IsComplete()
     {
-        return $"{Name}: {(completed ? "Completed" : "Not Completed")} - {TotalPoints} points";
+        return _isComplete;
+    }
+
+    // Display details (with [X] if complete, [ ] if not)
+    public override string GetDetailsString()
+    {
+        string status = _isComplete ? "[X]" : "[ ]";
+        return $"{status} {_name} ({_description})";
+    }
+
+    // Save to file
+    public override string SaveString()
+    {
+        // Format: SimpleGoal,Name,Description,Points,IsComplete
+        return $"SimpleGoal,{_name},{_description},{_points},{_isComplete}";
     }
 }

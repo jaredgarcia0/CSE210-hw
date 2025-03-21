@@ -1,16 +1,37 @@
 using System;
-using System.Collections.Generic;
+
 public class EternalGoal : Goal
 {
-    public EternalGoal(string name, int pointValue) : base(name, pointValue) { }
-
-    public override void RecordEvent()
+    // Constructor
+    public EternalGoal(string name, string description, int points)
+        : base(name, description, points) // Call base constructor
     {
-        TotalPoints += PointValue;
+        // No extra attributes needed
     }
 
-    public override string DisplayStatus()
+    // Record event: always awards points, never completes
+    public override int RecordEvent()
     {
-        return $"{Name}: Ongoing - {TotalPoints} points";
+        Console.WriteLine($"You completed '{_name}' and earned {_points} points!");
+        return _points;
+    }
+
+    // Eternal goals never complete
+    public override bool IsComplete()
+    {
+        return false;
+    }
+
+    // Return details string
+    public override string GetDetailsString()
+    {
+        return $"[Eternal Goal] {_name} ({_description})";
+    }
+
+    // Save string to file
+    public override string SaveString()
+    {
+        // Format: EternalGoal,Name,Description,Points
+        return $"EternalGoal,{_name},{_description},{_points}";
     }
 }
